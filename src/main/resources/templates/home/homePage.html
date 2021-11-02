@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>HomePage</title>
+    <style>
+        div {
+            font-size: 18px;
+            padding: 10px;
+        }
+        button[type=submit]{
+            background-color: #F5D7BF;
+            border: none;
+            color: #656665;
+            padding: 12px 20px;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div>Здравствуй, студент</div>
+<form th:action="homePage" method="post">
+    <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+    <button type="submit">Войти в кабинет</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Main Page</title>
+    <link rel="stylesheet" type="text/css" href="/default.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="/default.css" />
+</head>
+<body>
+<div>
+    <form th:action="@{/logout}" method="post" style="float: right;">
+        <input type="submit" value="Выйти из аккаунта"/>
+        <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+    </form>
+    <a href = "#" th:href="@{/users/userPage/addNewBid}">Добавить новую заявку</a>
+    <!--    Divide on roles -->
+    <td>
+        <a th:href="${page}" th:text="${text}"></a>
+    </td>
+    <div>Список заявок по тексту</div>
+    <form method="post" action="/users/userPage/filterText">
+        <label>
+            <input type="text" name="filterText" placeholder="Введите текст заявки">
+        </label>
+        <button type="submit">Найти</button>
+        <button type="reset">Очистить введенные данные</button>
+        <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+    </form>
+
+    <div>Поиск заявок пользователя</div>
+    <form method="post" action="/users/userPage/filterName">
+        <label>
+            <input type="text" name="filterName" placeholder="Введите имя пользователя">
+            <input type="text" name="filterSurname" placeholder="Введите фамилию пользователя">
+        </label>
+        <button type="submit">Найти</button>
+        <button type="reset">Очистить введенные данные</button>
+        <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+    </form>
+    <div>Работа с таблицей</div>
+    <form method="get" action="/users/userPage">
+        <button type="submit">Отобразить все заявки</button>
+    </form>
+    <form method="post" action="/users/userPage/studVotes">
+        <button type="submit">Отобразить все голосования</button>
+        <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+    </form>
+    <form method="post" action="/users/userPage/allBidsByName">
+        <button type="submit">Все мои заявки</button>
+        <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+        <table>
+            <caption><div th:text="${message}"></div></caption>
+            <tr>
+                <th>Имя Студента</th>
+                <th>Фамилия Студента</th>
+                <th>Текст заявки</th>
+                <th>Статус заявки</th>
+                <th>Адрес</th>
+                <th>Цена от</th>
+                <th>Цена до</th>
+                <th>Редактирование</th>
+                <th>Голосование</th>
+                <th>Файл</th>
+            </tr>
+            <tr th:each="bid: ${bids}">
+                <td th:text="${bid.author.getName()}"></td>
+                <td th:text="${bid.author.getSurname()}"></td>
+                <td><a th:href="@{/comments/commentPage/{id}(id=${bid.id})}" th:text="${bid.text}"></a></td>
+                <td th:text="${bid.status}"></td>
+                <td><span th:if="${bid.address.isBlank()}">Неизвестно</span>
+                    <span th:unless="${bid.address.isBlank()}"><span th:text="${bid.address}"></span></span>
+                </td>
+                <td><span th:if="${bid.getPriseFrom()==null}">Неизвестно</span>
+                    <span th:unless="${bid.getPriseFrom() == null}"><span th:text="${bid.getPriseFrom()}"></span></span>
+                </td>
+                <td><span th:if="${bid.getPriseTo()==null}">Неизвестно</span>
+                    <span th:unless="${bid.getPriseTo()==null}"><span th:text="${bid.getPriseTo()}"></span></span>
+                </td>
+                <td><span th:if="${bid.author == user && bid.status.s == 'Новая'}"><a
+                        th:href="@{/bids/bidList/{id}(id=${bid.id})}">Редактировать</a></span>
+                    <span th:unless="${bid.author == user && bid.status.s == 'Новая'}">Редактировать можно только свои новые заявки</span>
+                </td>
+                <td> <span th:if="${bid.status.s == 'Голосование_студ_состав'}"><a
+                        th:href="@{/votes/voting/{id}(id=${bid.id})}">Голосовать</a> </span></td>
+                <td><span th:if="${bid.fileName == null}">Без файла</span>
+                    <span th:unless="${bid.fileName == null}"><a th:href="@{/users/userPage/getFile/{fileName}(fileName = ${bid.fileName})}" th:text="${bid.fileName}"></a></span></td>
+            </tr>
+        </table>
+    </form>
+
+</div>
+
+</body>
+</html>

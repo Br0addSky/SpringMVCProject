@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Main Page</title>
+    <link rel="stylesheet" type="text/css" href="/default.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div>Поиск заявок по тексту</div>
+<form method="post" action="/users/expertPage/filterText">
+    <label>
+        <input type="text" name="filterText" placeholder="Введите текст заявки">
+    </label>
+    <button type="submit">Найти</button>
+    <button type="reset">Очистить введенные данные</button>
+    <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+</form>
+<div>Работа с таблицей</div>
+<form method="post" action="/users/expertPage/replaceBids">
+    <button type="submit">Отобразить все заявки</button>
+    <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+</form>
+<form method="get" action="/users/userPage">
+    <button type="submit">Вернуться на главную</button>
+</form>
+<form method="post" action="/users/expertPage/allBidsByName">
+    <button type="submit">Все мои заявки</button>
+    <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+    <table>
+        <caption><div th:text="${message}"></div></caption>
+        <tr>
+            <th>Имя Студента</th>
+            <th>Фамилия Студента</th>
+            <th>Текст заявки</th>
+            <th>Адрес</th>
+            <th>Цена от</th>
+            <th>Цена до</th>
+            <th>Голосование</th>
+            <th>Прикрепленные файлы</th>
+        </tr>
+        <tr th:each="bid: ${bids}">
+            <td th:text="${bid.author.getName()}"></td>
+            <td th:text="${bid.author.getSurname()}"></td>
+            <td><a th:href="@{/comments/commentPage/{id}(id=${bid.id})}" th:text="${bid.text}"></a></td>
+            <td><span th:if="${bid.address.isBlank()}">Неизвестно</span>
+                <span th:unless="${bid.address.isBlank()}"><span th:text="${bid.address}"></span></span>
+            </td>
+            <td><span th:if="${bid.getPriseFrom()==null}">Неизвестно</span>
+                <span th:unless="${bid.getPriseFrom() == null}"><span th:text="${bid.getPriseFrom()}"></span></span>
+            </td>
+            <td><span th:if="${bid.getPriseTo()==null}">Неизвестно</span>
+                <span th:unless="${bid.getPriseTo()==null}"><span th:text="${bid.getPriseTo()}"></span></span>
+            </td>
+            <td><a th:href="@{/votes/voting/{id}(id=${bid.id})}">Голосовать</a></td>
+            <td> <a th:href="@{/users/userPage/getFile/{fileName}(fileName = ${bid.fileName})}" th:text="${bid.fileName}"></a></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Bid editor</title>
+    <link rel="stylesheet" type="text/css" href="/default.css" />
+</head>
+<body>
+<td>
+    <form action="#" th:action="@{/bids/bidList}" method="post" enctype="multipart/form-data" th:object="${bid2}">
+        <table>
+            <tr>
+                <td>Текст:</td>
+                <td>
+                    <textarea th:field="*{text}" th:value="*{text}" placeholder="Введите текст заявки"></textarea>
+                <td th:if="${#fields.hasErrors('text')}" th:errors="*{text}"></td>
+            </tr>
+            <tr>
+                <td>Цена от:</td>
+                <td>
+                    <input type="text" th:field="*{priseFrom}" th:value="*{priseFrom}" placeholder="Цена от">
+                <td th:if="${#fields.hasErrors('priseFrom')}" th:errors="*{priseFrom}"></td>
+            </tr>
+            <tr>
+                <td>Цена до:</td>
+                <td>
+                    <input type="text" th:field="*{priseTo}" th:value="*{priseTo}" placeholder="Цена до">
+                <td th:if="${#fields.hasErrors('priseTo')}" th:errors="*{priseTo}"></td>
+            </tr>
+            <tr>
+                <td>Адрес исполнения заявки:</td>
+                <td>
+                    <input type="text" th:field="*{address}" th:value="*{address}"
+                           placeholder="Введите адрес исполнения заявки">
+                <td th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></td>
+            </tr>
+            <tr>
+                <td>Файл:</td>
+                <td>
+                    <input type="file" name="file" placeholder="Добавьте файл">
+            </tr>
+
+        </table>
+        <label><input th:type="hidden" th:value="${bid2.id}" th:name="bid"></label>
+        <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+        <button type="submit">Сохранить</button>
+    </form>
+    <form action="/bids/bidList/delete" method="post">
+        <button type="submit">Удалить заявку</button>
+        <input type="hidden" th:value="${_csrf.token}" th:name="_csrf"/>
+        <input th:type="hidden" th:value="${bid2.id}" th:name="bid">
+    </form>
+
+</td>
+
+</body>
+</html>
